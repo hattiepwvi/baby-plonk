@@ -13,10 +13,12 @@ class Setup(object):
     # = ( G,    xG,  ...,  x^{d-1}G ), where G is a generator of G_1
     powers_of_x: list[G1Point]
     # [x]₂ = xH, where H is a generator of G_2
+    # 椭圆曲线两个群 G1 G2
     X2: G2Point
 
     @classmethod
     # tau: a random number whatever you choose
+    # powers: length of SRS(structured reference string)
     def generate_srs(cls, powers: int, tau: int):
         print("Start to generate structured reference string")
 
@@ -27,10 +29,13 @@ class Setup(object):
         # powers_of_x[2] =  b.G1 * tau**2 = powers_of_x[1] * tau
         # ...
         # powers_of_x[i] =  b.G1 * tau**i = powers_of_x[i - 1] * tau
+        # TODO: generate powers_of_x
         powers_of_x[0] = b.G1
 
-        for i in range(1, powers):
-            powers_of_x[i] = b.multiply(powers_of_x[i - 1], tau)
+        for i in range(powers):
+            if i > 0:
+                powers_of_x[i] = b.multiply(powers_of_x[i - 1], tau)
+        # reference: https://github.com/sec-bit/learning-zkp/blob/master/plonk-intro-cn/5-plonk-polycom.md
 
         print("Generated G1 side, X^1 point: {}".format(powers_of_x[1]))
 
